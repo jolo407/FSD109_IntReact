@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import QtyPicker from '../qtyPicker/qtyPicker';
 import "./Product.css"; 
+import { increaseCounter, addProductToCart } from '../../Store/Actions/Actions';
 
 class  Product extends Component {
     state = {
@@ -23,7 +25,7 @@ class  Product extends Component {
 
                <div className="qty">
                <QtyPicker onValueChange={(qnty) => this.handleQuantityChange(qnty)}></QtyPicker>
-                <button className="btn btn-sm btn-primary btn-add">Add</button>
+                <button onClick={this.addToCart} className="btn btn-sm btn-primary btn-add">Add</button>
                 </div>
 
 
@@ -31,6 +33,18 @@ class  Product extends Component {
            </div>
          );
     }
+
+    addToCart = () => {
+      console.log("Added to cart");
+      this.props.increaseCounter();
+
+      var addedProduct ={
+        product: this.props.data,
+        quantity: this.state.quantity,
+      }
+
+      this.props.addProductToCart(addedProduct);
+    };
 
     getTotal = () => {
       return (this.props.data.price * this.state.quantity).toFixed(2);
@@ -41,4 +55,7 @@ class  Product extends Component {
     };
 }
  
-export default Product;
+// 2 params for connect
+// 1st: fn that maps the props to read from the store
+// 2nd: a list(obj) of actions you want to dispatch
+export default connect (null, { increaseCounter, addProductToCart }) (Product);
